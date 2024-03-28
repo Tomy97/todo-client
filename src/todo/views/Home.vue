@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import DialogTodo from '../components/DialogTodo.vue'
 import DataTableTodo from '../components/DataTableTodo.vue'
