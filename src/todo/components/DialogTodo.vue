@@ -7,26 +7,34 @@ import type { Todo } from '../types/todo.d.ts'
 import Button from 'primevue/button'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
+import type { DataForm } from '../types/data'
+import { useTodoStore } from '../store/todo'
 
 const props = defineProps<{
   visible: boolean
   todo: Todo | null
 }>()
 
-const $emits = defineEmits(['save', 'cancel', 'closeModal'])
+const store = useTodoStore()
 
-const formValue = reactive({
+const $emits = defineEmits(['cancel', 'closeModal'])
+
+const formValue = reactive<DataForm>({
   title: props.todo?.title || '',
   description: props.todo?.description || ''
 })
 
 const loading = ref<boolean>(false)
 
-const onSubmitData = () => {
+const onSubmitData = (id?: string) => {
   loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 2000)
+  if (id) {
+    store.updateTodo(id, formValue)
+  } else {
+    store.createNewTodo(formValue)
+  }
+  loading.value = false
+  $emits('closeModal')
 }
 </script>
 <template>
@@ -55,7 +63,7 @@ const onSubmitData = () => {
         :label="todo ? 'Editar' : 'Crear'"
         icon="pi pi-check"
         :loading="loading"
-        @click="onSubmitData"
+        @click="onSubmitData(todo?.id)"
       />
     </template>
   </Dialog>

@@ -42,7 +42,7 @@ const selectedTodos = ref<Todo[]>()
           outlined
           rounded
           severity="danger"
-          @click="$emits('onDelete', slotProps.data)"
+          @click="$emits('onDelete', slotProps.data.id)"
         />
       </template>
     </Column>

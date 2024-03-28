@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 import DialogTodo from '../components/DialogTodo.vue'
 import DataTableTodo from '../components/DataTableTodo.vue'
@@ -7,28 +7,11 @@ import ToolbarTodo from '../components/ToolbarTodo.vue'
 
 import type { Todo } from '../types/todo.d.ts'
 
-import { confirmDeleteTodo, exportCSV } from '@/todo/composables/todo'
+import { exportCSV } from '@/todo/composables/todo'
+import { useTodoStore } from '../store/todo'
 
-const todos = reactive<Todo[]>([
-  {
-    id: 1,
-    title: 'hola, soy un titulo',
-    description: 'hola, soy una descripción',
-    completed: false
-  },
-  {
-    id: 2,
-    title: 'hola, soy un titulo 2',
-    description: 'hola, soy una descripción 2',
-    completed: true
-  },
-  {
-    id: 3,
-    title: 'hola, soy un titulo 3',
-    description: 'hola, soy una descripción 3',
-    completed: false
-  }
-])
+const store = useTodoStore()
+
 const todoForEdit = ref<Todo | null>(null)
 const visibleDialog = ref<boolean>(false)
 const selectedTodosForDelete = ref<Todo[]>()
@@ -53,6 +36,10 @@ const editTodo = (todo: Todo) => {
 const isAvailableDeleteTodos = computed(() => {
   return selectedTodosForDelete.value && selectedTodosForDelete.value.length >= 2
 })
+
+onMounted(() => {
+  store.fetchTodos()
+})
 </script>
 <template>
   <main class="h-screen flex-wrap flex align-items-center justify-content-center">
@@ -64,7 +51,7 @@ const isAvailableDeleteTodos = computed(() => {
         @confirmDeleteSelected="confirmDeleteSelected"
         @exportCSV="exportCSV"
       />
-      <DataTableTodo :todos="todos" @onDelete="confirmDeleteTodo" @onEdit="editTodo" />
+      <DataTableTodo :todos="store.todos" @onDelete="store.deleteTodo" @onEdit="editTodo" />
       <template v-if="visibleDialog">
         <DialogTodo :visible="visibleDialog" :todo="todoForEdit" @closeModal="closeDialog" />
       </template>

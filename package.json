@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@vee-validate/rules": "^4.12.6",
+    "axios": "^1.6.8",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "primeflex": "^3.3.1",
